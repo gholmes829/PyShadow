@@ -41,14 +41,6 @@ def stickify(file_in_path):
     cmd = f'stickytape {file_in_path} --add-python-path {osp.dirname(file_in_path)}'
     return sp.run(cmd, shell = True, stdout = sp.PIPE, stderr = sp.STDOUT).stdout.decode(encoding='utf-8')
 
-# def dumbify(file_in_path):
-#     cmd = f'pyminifier --obfuscate {file_in_path}'
-#     res = sp.run(cmd, shell = True, stdout = sp.PIPE, stderr = sp.STDOUT).stdout.decode(encoding='utf-8')
-#     if '# Created by pyminifier (https://github.com/liftoff/pyminifier)' in res:
-#         res = res.replace('# Created by pyminifier (https://github.com/liftoff/pyminifier)', '')
-
-#     return res
-
 def zipify(file_in_path):
     with open(file_in_path, 'r') as f:
         data = f.read()
@@ -59,7 +51,6 @@ def zipify(file_in_path):
 def obfuscate_file(file_path, output_name):
     copyfile(file_path, osp.join(GEN_PATH, 'source.py'))
     packaged_out_path = osp.join(GEN_PATH, '_packaged.py')
-    #obfuscated_out_path = osp.join(GEN_PATH, '_obfuscated.py')
     zipped_out_path = osp.join(GEN_PATH, '_zipped.py')
     cpp_src_out_path = osp.join(GEN_PATH, 'main.cpp')
     executable_out_path = osp.join(GEN_PATH, output_name)
@@ -70,10 +61,6 @@ def obfuscate_file(file_path, output_name):
         sticky = stickify(file_path)
         sticky = '\n'.join(sticky.split('\n')[1:])
         f.write(sticky)
-
-    # with open(obfuscated_out_path, 'w') as f:
-    #     dumbed = dumbify(packaged_out_path)                
-    #     f.write(dumbed)
 
     with open(zipped_out_path, 'w') as f:
         zipped = zipify(packaged_out_path)
